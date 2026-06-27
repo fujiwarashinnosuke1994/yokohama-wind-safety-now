@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
-  Line,
-  LineChart,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -148,7 +149,7 @@ export function WindDashboard({ initialData }: WindDashboardProps) {
         {data.ok && data.history.length > 0 ? (
           <div className="mt-4 h-64 w-full">
             <ResponsiveContainer height="100%" width="100%">
-              <LineChart data={formatChartData(data.history)} margin={{ bottom: 8, left: 0, right: 8, top: 12 }}>
+              <BarChart data={formatChartData(data.history)} margin={{ bottom: 8, left: 0, right: 8, top: 12 }}>
                 <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" />
                 <XAxis dataKey="label" minTickGap={18} stroke="#64748b" tick={{ fontSize: 12 }} tickLine={false} />
                 <YAxis
@@ -163,16 +164,12 @@ export function WindDashboard({ initialData }: WindDashboardProps) {
                   formatter={(value) => [`${Number(value).toFixed(2)} m/s`, "風速"]}
                   labelFormatter={(label) => `時刻 ${label}`}
                 />
-                <Line
-                  activeDot={{ r: 5 }}
-                  dataKey="windSpeed"
-                  dot={{ r: 3 }}
-                  isAnimationActive={false}
-                  stroke="#0f766e"
-                  strokeWidth={3}
-                  type="monotone"
-                />
-              </LineChart>
+                <Bar dataKey="windSpeed" isAnimationActive={false} radius={[6, 6, 0, 0]}>
+                  {data.history.map((point) => (
+                    <Cell fill={getBarColor(point.windSpeed)} key={`${point.time}-${point.windSpeed}`} />
+                  ))}
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </div>
         ) : (
@@ -180,6 +177,9 @@ export function WindDashboard({ initialData }: WindDashboardProps) {
             過去60分の推移データを取得できません
           </p>
         )}
+        <p className="mt-3 text-xs leading-6 text-slate-500">
+          赤色は強風域の目安です。実際の危険性は周囲の状況、地形、建物、交通状況によって変わります。
+        </p>
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
@@ -208,6 +208,18 @@ export function WindDashboard({ initialData }: WindDashboardProps) {
       </footer>
     </>
   );
+}
+
+function getBarColor(windSpeed: number) {
+  if (windSpeed >= 15) {
+    return "#991b1b";
+  }
+
+  if (windSpeed >= 10) {
+    return "#ef4444";
+  }
+
+  return "#0f766e";
 }
 
 function InfoBlock({ label, value }: { label: string; value: string }) {

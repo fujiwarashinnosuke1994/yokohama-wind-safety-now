@@ -16,7 +16,7 @@ export default async function Home() {
               横浜市の現在風速
             </h1>
             <p className="mt-2 max-w-lg text-sm font-medium leading-6 text-slate-600">
-              強風時の外出、自転車、海沿い移動、子どもの送迎、車の運転判断を助ける外出判断の補助ツールです。
+              風速・風向・過去60分の推移を確認し、外出、自転車、海沿い移動、お子様の送迎、車の運転判断を補助します。これは避難情報ではなく、公式情報の代替ではありません。
             </p>
           </div>
           <div className="shrink-0 rounded-lg border border-bay-100 bg-white px-3 py-2 text-center shadow-sm">
