@@ -1,7 +1,7 @@
 const YOKOHAMA_LATITUDE = 35.4437;
 const YOKOHAMA_LONGITUDE = 139.638;
 const OPEN_METEO_URL =
-  "https://api.open-meteo.com/v1/forecast?latitude=35.4437&longitude=139.6380&current=wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FTokyo";
+  "https://api.open-meteo.com/v1/forecast?latitude=35.4437&longitude=139.6380&current=wind_speed_10m,wind_direction_10m&minutely_15=wind_speed_10m&wind_speed_unit=ms&timezone=Asia%2FTokyo&past_minutely_15=4&forecast_minutely_15=1";
 
 type OpenMeteoCurrent = {
   time?: string;
@@ -15,12 +15,21 @@ type OpenMeteoResponse = {
     wind_speed_10m?: string;
     wind_direction_10m?: string;
   };
+  minutely_15?: {
+    time?: string[];
+    wind_speed_10m?: Array<number | null>;
+  };
 };
 
 export type SafetyLevel = {
   label: string;
   memo: string;
   tone: "calm" | "notice" | "caution" | "warning" | "danger";
+};
+
+export type WindHistoryPoint = {
+  time: string;
+  windSpeed: number;
 };
 
 export type WindData =
@@ -36,6 +45,7 @@ export type WindData =
       windDirectionText: string;
       observedAt: string;
       safetyLevel: SafetyLevel;
+      history: WindHistoryPoint[];
     }
   | {
       ok: false;
@@ -81,7 +91,8 @@ export async function getYokohamaWindData(): Promise<WindData> {
       windDirectionDegree,
       windDirectionText: degreeToDirection(windDirectionDegree),
       observedAt,
-      safetyLevel: getSafetyLevel(windSpeed)
+      safetyLevel: getSafetyLevel(windSpeed),
+      history: parseWindHistory(data)
     };
   } catch {
     return {
@@ -146,6 +157,48 @@ export function formatDateTime(value: string): string {
     dateStyle: "short",
     timeStyle: "short"
   }).format(date);
+}
+
+export function formatDateTimeWithSeconds(value: string): string {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  }).format(date);
+}
+
+function parseWindHistory(data: OpenMeteoResponse): WindHistoryPoint[] {
+  const times = data.minutely_15?.time;
+  const windSpeeds = data.minutely_15?.wind_speed_10m;
+
+  if (!times || !windSpeeds) {
+    return [];
+  }
+
+  return times
+    .map((time, index) => {
+      const windSpeed = windSpeeds[index];
+
+      if (typeof windSpeed !== "number") {
+        return null;
+      }
+
+      return {
+        time,
+        windSpeed
+      };
+    })
+    .filter((point): point is WindHistoryPoint => point !== null);
 }
 
 function degreeToDirection(degree: number): string {
