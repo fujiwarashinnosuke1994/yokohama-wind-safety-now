@@ -309,7 +309,7 @@ export function WindDashboard({ initialData }: WindDashboardProps) {
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-lg font-extrabold text-slate-950">1週間の天気予報</h2>
+              <h2 className="text-lg font-extrabold text-slate-950">9日後までの天気予報</h2>
               <p className="mt-2 text-xs leading-6 text-slate-500">
                 通学・通塾・送迎・通勤・車の運転判断の補助として確認できます。公式情報の代替ではありません。
               </p>
@@ -323,7 +323,7 @@ export function WindDashboard({ initialData }: WindDashboardProps) {
             </div>
           ) : (
             <p className="mt-4 rounded-lg bg-slate-50 p-4 text-sm font-medium leading-6 text-slate-600">
-              1週間予報を取得できません
+              9日後までの予報を取得できません
             </p>
           )}
         </section>
