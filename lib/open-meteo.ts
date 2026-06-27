@@ -5,7 +5,7 @@ const ARCHIVE_BASE_URL = "https://archive-api.open-meteo.com/v1/archive";
 const LOCATION_QUERY = `latitude=${YOKOHAMA_LATITUDE}&longitude=${YOKOHAMA_LONGITUDE}`;
 const COMMON_QUERY = "wind_speed_unit=ms&timezone=Asia%2FTokyo";
 const CURRENT_URL = `${FORECAST_BASE_URL}?${LOCATION_QUERY}&current=wind_speed_10m,wind_direction_10m&minutely_15=wind_speed_10m&${COMMON_QUERY}&past_minutely_15=4&forecast_minutely_15=1`;
-const WEATHER_URL = `${FORECAST_BASE_URL}?${LOCATION_QUERY}&current=temperature_2m,apparent_temperature,precipitation,rain,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max&minutely_15=wind_speed_10m&${COMMON_QUERY}&forecast_days=10&past_minutely_15=4&forecast_minutely_15=1`;
+const WEATHER_URL = `${FORECAST_BASE_URL}?${LOCATION_QUERY}&current=temperature_2m,apparent_temperature,precipitation,rain,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max&minutely_15=wind_speed_10m&${COMMON_QUERY}&forecast_days=9&past_minutely_15=4&forecast_minutely_15=1`;
 
 type OpenMeteoCurrent = {
   time?: string;
